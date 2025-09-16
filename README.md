@@ -1,70 +1,84 @@
-# Getting Started with Create React App
+# Reaction Trainer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A web-based game collection designed to test and improve users' reaction time, reflexes, and color recognition. Built with **React**, this project includes multiple mini-games with persistent statistics.
 
-## Available Scripts
+## 🕹️ Games Included
+- **Reaction Speed** – Click the moving target as fast as possible.  
+- **Reflex Challenge** – Hit multiple targets while avoiding penalty ones.  
+- **Color Match** – Decide if the word matches its color.  
+- **Multi Target Reflex** – Advanced reflex training with multiple targets.
 
-In the project directory, you can run:
+## Features
+- Track **reaction times** and show **last result**.
+- Store and display **historical statistics** for each game.
+- **Start countdown** before each game (3…2…1…Go!).
+- **Stop button** to pause the game at any moment.
+- Responsive game area that adapts to screen size.
+- Sidebar for quick navigation between games.
+- Future-ready structure for **user login and personalized scores**.
 
-### `npm start`
+## ⚙️ Installation
+1. Clone the repo:  
+```bash
+git clone https://github.com/<USERNAME>/<REPO>.git
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+2. Navigate to the project folder:  
+```bash
+cd reaction-trainer
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+3. Install dependecies
+```
+npm install pnpm
+pnpm install
+```
 
-### `npm test`
+4. Start the app 
+```
+pnpm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## Technologies Used
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**React** – Frontend UI
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**JavaScript (ES6+)** – Logic and interactivity
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**HTML5 & CSS3** – Layout and styling
 
-### `npm run eject`
+**LocalStorage** – Persistent storage for reaction times
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+(Future plans include Node.js + MongoDB integration for user accounts and cloud-based stats.)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Usage
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Select a game from the sidebar.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. Press Start to begin the countdown.
 
-## Learn More
+3. Play the game by following the instructions.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+4. Stop the game at any time to pause.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+5. View historical reaction times in the stats section.
 
-### Code Splitting
+## 📂 Project Structure
+```
+src/
+├─ components/    # UI and game components
+├─ pages/         # Game pages
+├─ utils/         # Storage and helper functions
+├─ App.js         # Main app
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Future Improvements
 
-### Analyzing the Bundle Size
+Add user authentication and personalized profiles.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Cloud storage for game stats.
 
-### Making a Progressive Web App
+Additional mini-games and challenges.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Mobile-friendly layout and touch support.
