@@ -20,7 +20,7 @@ A web-based game collection designed to test and improve users' reaction time, r
 ## ⚙️ Installation
 1. Clone the repo:  
 ```bash
-git clone https://github.com/<USERNAME>/<REPO>.git
+git clone https://github.com/jfmmartins/Reaction-Trainer.git
 ```
 
 2. Navigate to the project folder:  
