@@ -2,15 +2,21 @@ import ReactionSpeed from '../games/ReactionSpeed';
 import ReflexChallenge from '../games/ReflexChallenge';
 import ColorMatch from '../games/ColorMatch';
 
-function Home({ selectedGame }) {
+function Home({ selectedGame, userId }) {
   const renderGame = () => {
     switch(selectedGame) {
-      case 'Reaction Speed': return <ReactionSpeed />;
-      case 'Reflex Challenge': return <ReflexChallenge />;
-      case 'Color Match': return <ColorMatch />;
+      case 'Reaction Speed':
+        return <ReactionSpeed userId={userId} />;
+      case 'Color Match':
+        return <ColorMatch userId={userId} />;
+      case 'Reflex Challenge':
+        return <ReflexChallenge userId={userId} />;
       default: return <ReactionSpeed />;
     }
   }
+
+  console.log(`Home: ${userId} and game: ${selectedGame}`);
+
 
   return (
     <div

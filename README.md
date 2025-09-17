@@ -1,84 +1,105 @@
 # Reaction Trainer
 
-A web-based game collection designed to test and improve users' reaction time, reflexes, and color recognition. Built with **React**, this project includes multiple mini-games with persistent statistics.
+A full-stack web application designed to test and improve a user's reaction time, reflexes, and color recognition. This project features multiple mini-games with **user authentication**, **cloud-based score storage**, and personalized statistics.
 
 ## 🕹️ Games Included
-- **Reaction Speed** – Click the moving target as fast as possible.  
-- **Reflex Challenge** – Hit multiple targets while avoiding penalty ones.  
-- **Color Match** – Decide if the word matches its color.  
-- **Multi Target Reflex** – Advanced reflex training with multiple targets.
+- **Reaction Speed** – Click a moving target as fast as possible.
+- **Color Match** – Decide if the word matches its color.
+- **Reflex Challenge** – Hit the correct color target to score points.
+
+---
 
 ## Features
-- Track **reaction times** and show **last result**.
-- Store and display **historical statistics** for each game.
-- **Start countdown** before each game (3…2…1…Go!).
-- **Stop button** to pause the game at any moment.
-- Responsive game area that adapts to screen size.
-- Sidebar for quick navigation between games.
-- Future-ready structure for **user login and personalized scores**.
+- **User Authentication**: Secure user login and registration.
+- **Persistent Stats**: All game scores are saved to a **MongoDB** database, accessible from any device.
+- **Personalized Stats**: View your own historical performance, including average reaction times and progress over time.
+- **Global Leaderboard**: Compete with other users and see the top average scores for each game.
+- **Real-time Feedback**: Get instant visual feedback (green for correct, red for incorrect) and penalty times for mistakes.
+- **Start Countdown**: A 3-2-1 countdown before each game begins.
+- **Responsive Design**: The game adapts to different screen sizes.
+
+---
 
 ## ⚙️ Installation
-1. Clone the repo:  
-```bash
-git clone https://github.com/<USERNAME>/<REPO>.git
-```
+To get started, you'll need to set up both the frontend and the backend.
 
-2. Navigate to the project folder:  
+### **1. Clone the Repository**
 ```bash
+git clone https://github.com/jfmmartins/Reaction-Trainer.git
 cd reaction-trainer
 ```
 
-3. Install dependecies
-```
-npm install pnpm
-pnpm install
-```
-
-4. Start the app 
-```
+### **2. Frontend Setup**
+From the project's root directory, install the dependencies and start the React app.
+```bash
+npm pnpm
 pnpm start
 ```
 
+### **3. Backend Setup**
+Navigate to the `server` directory, install its dependencies, and create a `.env` file.
+```bash
+cd server
+npm install
+```
 
-## Technologies Used
+Your `.env` file should contain the following:
+```bash
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=a_strong_random_secret
+```
+Then, start the server:
+```
+pnpm start
+```
+The server will run on port `5000`.
 
-**React** – Frontend UI
+---
 
-**JavaScript (ES6+)** – Logic and interactivity
+## 💻 Technologies Used
+**Frontend**
+- **React** – For building the user interface.
+- **JavaScript (ES6+)** – For logic and interactivity.
+- **HTML5 & CSS3** – For layout and styling.
+- **`Recharts`** – For creating the dynamic stats graph.
 
-**HTML5 & CSS3** – Layout and styling
+**Backend**
+- **Node.js** – Server-side runtime environment.
+- **Express.js** – Web framework for creating API routes.
+- **MongoDB** – A NoSQL database for storing user data and scores.
+- **Mongoose** – An ODM for interacting with MongoDB.
+- **JWT (JSON Web Tokens)** – For secure user authentication.
 
-**LocalStorage** – Persistent storage for reaction times
-
-(Future plans include Node.js + MongoDB integration for user accounts and cloud-based stats.)
-
-## Usage
-
-1. Select a game from the sidebar.
-
-2. Press Start to begin the countdown.
-
-3. Play the game by following the instructions.
-
-4. Stop the game at any time to pause.
-
-5. View historical reaction times in the stats section.
+---
 
 ## 📂 Project Structure
 ```
-src/
-├─ components/    # UI and game components
-├─ pages/         # Game pages
-├─ utils/         # Storage and helper functions
-├─ App.js         # Main app
+reaction-trainer/
+├─ public/
+├─ src/
+│  ├─ assets/         # Game videos and images
+│  ├─ components/     # UI elements (Leaderboard, GameWrapper)
+│  ├─ games/          # Individual game components (ReactionSpeed, ColorMatch)
+│  ├─ pages/          # Full-page components (Home, Stats)
+│  ├─ utils/          # Helper functions (storage, API calls)
+│  ├─ App.js
+│  ├─ index.js
+├─ server/
+│  ├─ middleware/     # Auth middleware
+│  ├─ models/         # Mongoose models (User, Score)
+│  ├─ .env            # Environment variables
+│  ├─ server.js       # Main backend server
+│  ├─ package.json
+├─ .gitignore
+├─ README.md
+├─ package.json
 ```
 
+--- 
+
 ## Future Improvements
-
-Add user authentication and personalized profiles.
-
-Cloud storage for game stats.
-
-Additional mini-games and challenges.
-
-Mobile-friendly layout and touch support.
+- **Game Customization**: Allow users to adjust game difficulty (e.g., change the number of targets, color variations, or speed).
+- **Gamification**: Introduce achievements, badges, or a leveling system to keep users engaged.
+- **Historical Trends**: Add more advanced charting in the stats section to show trends like best times, worst times, and progress over time.
+- **Mobile-First Design**: Fully optimize the layout and touch controls for an excellent mobile experience.
+- **Password Reset**: Implement a secure password reset functionality for registered users.

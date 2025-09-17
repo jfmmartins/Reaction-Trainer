@@ -1,13 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { saveTimes, loadTimes } from '../utils/storage';
 import GameWrapper from './GameWrapper';
+import reactionSpeedVideo from '../assets/Reaction_Speed.mp4';
+import { loadUserToken } from '../utils/storage';
 
-function ReactionSpeed({ selectedGame = 'Reaction Speed' }, userId) {
+
+const API_URL = 'http://localhost:5000/api';
+
+
+function ReactionSpeed({ selectedGame = 'Reaction Speed' , userId}) {
   const [position, setPosition] = useState({ top: 0, left: 0, display: 'none' });
   const [startTime, setStartTime] = useState(null);
   const [times, setTimes] = useState([]);
   const [lastTime, setLastTime] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [flashColor, setFlashColor] = useState(null);
 
+  const PENALTY_TIME = 200; 
   const gameAreaRef = useRef(null);
   const STIM_SIZE = 50;
 
@@ -30,7 +39,9 @@ function ReactionSpeed({ selectedGame = 'Reaction Speed' }, userId) {
     }, delay);
   };
 
-  const handleClick = () => {
+  const handleStimulusClick = (event) => {
+    event.stopPropagation();
+    
     if (!startTime) return;
 
     const reactionTime = Date.now() - startTime;
@@ -38,31 +49,51 @@ function ReactionSpeed({ selectedGame = 'Reaction Speed' }, userId) {
 
     const newTimes = [...times, reactionTime];
     setTimes(newTimes);
+
+    console.log("New reaction time recorded:", reactionTime);
+    console.log("All times:", newTimes);
+
+    console.log(`Saving stats to local storage for user: ${userId} and game: ${selectedGame}`);
     saveTimes(selectedGame, newTimes, userId);
+
+    setFlashColor('green');
+    setTimeout(() => setFlashColor(null), 200);
 
     setPosition(prev => ({ ...prev, display: 'none' }));
     showStimulus();
   };
 
+  const handleGameAreaClick = () => {
+    if (startTime) {
+      setStartTime(prevStartTime => prevStartTime - PENALTY_TIME);
+      setFlashColor('red');
+      setTimeout(() => setFlashColor(null), 200);
+    }
+  };
+
   useEffect(() => {
+    console.log(`Loading stats from local storage for user: ${userId} and game: ${selectedGame}`);
     const loaded = loadTimes(selectedGame, userId);
     setTimes(Array.isArray(loaded) ? loaded : []);
     setLastTime(null);
   }, [selectedGame, userId]);
   
   const handleStart = () => {
-    setTimes([]);
+    setShowPopup(true);
     setLastTime(null);
     showStimulus();
   };
 
   const handleStop = () => {
+    setShowPopup(false);
     setStartTime(null);
     setPosition({ top: 0, left: 0, display: 'none' });
   };
 
+  console.log(`Passing lastScore: ${lastTime} and userId: ${userId} to GameWrapper`);
+
+
   return (
-    <GameWrapper onStart={handleStart} onStop={handleStop}>
       <div
         style={{
           display: 'flex',
@@ -72,63 +103,85 @@ function ReactionSpeed({ selectedGame = 'Reaction Speed' }, userId) {
           position: 'relative',
         }}
       >
-        <h1 style={{ 
-          textAlign: 'center', 
-          flexShrink: 0,
-          margin: '10px 0',
-          fontSize: '24px'
-        }}>
-          {selectedGame}
-        </h1>
         
-        {lastTime !== null && (
-          <p style={{ 
-            textAlign: 'center', 
-            flexShrink: 0, 
-            margin: '5px 0 15px',
-            color: '#666'
-          }}>
-            Last Reaction: {lastTime} ms
-          </p>
-        )}
 
-        {/* This is the game area that needs to expand */}
+      <GameWrapper
+        onStart={handleStart}
+        onStop={handleStop}
+        videoSrc={reactionSpeedVideo}
+        selectedGame={selectedGame}
+        lastScore={lastTime} // Pass the lastTime score
+        userId={userId} // Pass the userId
+      />
+      {showPopup && (
         <div
-          ref={gameAreaRef}
           style={{
-            flexGrow: 1,
-            position: 'fixed', // Break out of parent constraints
-            top: '30%', // Adjust based on your header height
-            left: '18%', // Adjust to your sidebar width
-            right: '1%', // Right margin
-            bottom: '1%', // Bottom margin
-            border: '2px solid #333',
-            borderRadius: '12px',
-            backgroundColor: '#f8f9fa',
-            overflow: 'hidden',
-            zIndex: 999,
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
           }}
         >
           <div
-            className="stimulus"
+            ref={gameAreaRef}
+            onClick={handleGameAreaClick}
             style={{
-              position: 'absolute',
-              width: STIM_SIZE + 'px',
-              height: STIM_SIZE + 'px',
-              borderRadius: '50%',
-              backgroundColor: startTime ? 'green' : 'grey',
-              top: position.top,
-              left: position.left,
-              display: position.display,
-              cursor: 'pointer',
-              boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+              width: '90%',
+              height: '90%',
+              backgroundColor: flashColor || '#f8f9fa',
               transition: 'background-color 0.2s ease-in-out',
+              border: '2px solid #333',
+              borderRadius: '12px',
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
             }}
-            onClick={handleClick}
-          />
+          >
+            {/* Close button/icon for the popup */}
+            <button 
+              onClick={handleStop} // Use handleStop to close the popup
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: '#667',
+                fontSize: '30px',
+                cursor: 'pointer',
+                zIndex: 1001,
+                lineHeight: 1,
+              }}
+            >
+              &times;
+            </button>
+            <div
+              className="stimulus"
+              onClick={handleStimulusClick}
+              style={{
+                position: 'absolute',
+                width: STIM_SIZE + 'px',
+                height: STIM_SIZE + 'px',
+                borderRadius: '50%',
+                backgroundColor: startTime ? '#00d1b2' : 'grey',
+                top: position.top,
+                left: position.left,
+                display: position.display,
+                cursor: 'pointer',
+                boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+                transition: 'background-color 0.2s ease-in-out',
+              }}
+            />
+          </div>
         </div>
-      </div>
-    </GameWrapper>
+      )}
+    </div>
   );
 }
 

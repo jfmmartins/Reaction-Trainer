@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+
 import { saveTimes, loadTimes } from '../utils/storage';
 import GameWrapper from './GameWrapper';
-
+import colorMatchVideo from '../assets/Color_Match.mp4';
 
 const COLORS = ['red', 'green', 'blue', 'yellow', 'orange', 'purple'];
 
@@ -9,8 +10,11 @@ function ColorMatch({ selectedGame = 'Color Match', userId }) {
   const [word, setWord] = useState('');
   const [color, setColor] = useState('');
   const [startTime, setStartTime] = useState(null);
-  const [lastTime, setLastTime] = useState(null);
+  const [times, setTimes] = useState([]); // Use this to store all times
   const [feedback, setFeedback] = useState('');
+  const [flashColor, setFlashColor] = useState(null);
+
+  const PENALTY_TIME = 200;
 
   const nextChallenge = () => {
     const newWord = COLORS[Math.floor(Math.random() * COLORS.length)];
@@ -27,10 +31,13 @@ function ColorMatch({ selectedGame = 'Color Match', userId }) {
     const reactionTime = Date.now() - startTime;
 
     if (userThinksMatch === actualMatch) {
-      setFeedback('Right');
+      setFlashColor('green');
     } else {
-      setFeedback('Wrong');
+      setStartTime((prevStartTime) => prevStartTime - PENALTY_TIME);
+      setFlashColor('red');
     }
+
+    setTimeout(() => setFlashColor(null), 200);
 
     const saved = loadTimes(selectedGame, userId);
     const newTimes = Array.isArray(saved) ? [...saved, reactionTime] : [reactionTime];
@@ -41,21 +48,57 @@ function ColorMatch({ selectedGame = 'Color Match', userId }) {
     nextChallenge();
   };
 
-  useEffect(() => {
-    loadTimes(selectedGame, userId);
+  const handleStart = () => {
     nextChallenge();
+  };
+
+  const handleStop = () => {
+    // Calculate and return the average score from all attempts
+    if (times.length > 0) {
+      const totalTime = times.reduce((sum, time) => sum + time, 0);
+      const avgTime = Math.round(totalTime / times.length);
+      return avgTime;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const loaded = loadTimes(selectedGame, userId);
+    if (Array.isArray(loaded)) {
+      setTimes(loaded);
+    }
+    // nextChallenge() is handled by the GameWrapper's onStart prop
   }, [selectedGame, userId]);
 
   return (
-    <GameWrapper   
-      onStart={() => setStartTime(Date.now())} 
-      onStop={() => setStartTime(null)}
+    <GameWrapper
+      onStart={handleStart}
+      onStop={handleStop}
+      videoSrc={colorMatchVideo}
+      selectedGame={selectedGame}
+      lastScore={
+        times.length > 0
+          ? Math.round(times.reduce((a, b) => a + b, 0) / times.length)
+          : null
+      }
+      userId={userId} // Pass the userId
     >
-      <div className="card" style={{ textAlign: 'center', userSelect: 'none' }}>
+      <div
+        className="card"
+        style={{
+          textAlign: 'center',
+          userSelect: 'none',
+          backgroundColor: flashColor || 'white',
+          transition: 'background-color 0.2s ease-in-out',
+          padding: '20px',
+          borderRadius: '12px',
+        }}
+      >
         <h1>{selectedGame}</h1>
-        {lastTime !== null && <p>Last Reaction: {lastTime} ms</p>}
 
-        <p>Decide if the <strong>word matches the color</strong>!</p>
+        <p>
+          Decide if the <strong>word matches the color</strong>!
+        </p>
 
         <div
           style={{
@@ -84,9 +127,7 @@ function ColorMatch({ selectedGame = 'Color Match', userId }) {
           </div>
 
           {feedback && (
-            <div style={{ fontSize: '48px', marginTop: '10px' }}>
-              {feedback}
-            </div>
+            <div style={{ fontSize: '48px', marginTop: '10px' }}>{feedback}</div>
           )}
         </div>
       </div>
